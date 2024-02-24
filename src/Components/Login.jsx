@@ -1,10 +1,11 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "./providers/AuthProvider";
 
 const Login = () => {
 
-    const {signInUser} = useContext(AuthContext)
+    const {signInUser, signInGoogle} = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -15,8 +16,19 @@ const Login = () => {
         signInUser(email, password)
         .then((result)=> {
             console.log(result.user);
+            e.target.reset();
+            navigate('/');
         })
         .catch((error)=> {
+            console.error(error)
+        })
+    }
+    const handleGoogleSignIn = () =>{
+        signInGoogle()
+        .then((result) =>{
+            console.log(result.user);
+        })
+        .catch((error)=>{
             console.error(error)
         })
     }
@@ -51,6 +63,7 @@ const Login = () => {
                             name="password"
                             placeholder="password" 
                             className="input input-bordered" 
+                            autocomplete="current-password"
                             required />
                         <label className="label">
                             <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
@@ -68,6 +81,10 @@ const Login = () => {
                         <button className="btn btn-link">Register</button>
                     </Link>
                 </p>
+                <div className="flex flex-col items-center">
+                    <p className="mb-3 text-white">Social Media Login</p>
+                    <p> <button onClick={handleGoogleSignIn} className="btn bg-orange-600 text-white">Google</button></p>
+                </div>
             </div>
         </div>
     </div>

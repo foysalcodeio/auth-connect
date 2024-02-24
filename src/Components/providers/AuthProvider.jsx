@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types'; // ES6
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
 import auth from "../firebase/firebase.config";
 
 //create context
@@ -11,26 +11,37 @@ const AuthProvider = ({ children }) => {
 
     //state
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+
+    const googleProvider = new GoogleAuthProvider()
 
 
     //kind of data
     const createUser = (email, password) => {
+        setLoading(true);
         return createUserWithEmailAndPassword(auth, email, password)
     }    
     const signInUser = (email, password) => {
+        setLoading(true)
         return signInWithEmailAndPassword(auth, email, password)
     }
     const logOut = () => {
+        setLoading(true)
         return signOut(auth);
     }
 
+    const signInGoogle = () => {
+        setLoading(true);
+        return signInWithPopup(auth, googleProvider);
+    }
 
 
 
     //obj or other any value set here
     //destructure
     const authInfo = {
-       user, logOut, createUser , signInUser// we use createUser hence anyplace this function can be use
+       user, loading, signInGoogle, logOut, createUser , signInUser// we use createUser hence anyplace this function can be use
     }
 
     //observation
@@ -38,6 +49,7 @@ const AuthProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, currentUser => {
             if(currentUser){
                 setUser(currentUser);
+                setLoading(false);
             }
         })
         return ( ()=>{

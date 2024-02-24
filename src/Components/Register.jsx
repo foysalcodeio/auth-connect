@@ -8,8 +8,6 @@ const Register = () => {
     // console.log(authInfo)
     const {createUser} = useContext(AuthContext);
 
-    
-
     const handleRegister = (e) => {
         e.preventDefault();
         const name = e.target.name.value;
@@ -68,6 +66,7 @@ const Register = () => {
                                 name="password"
                                 placeholder="password" 
                                 className="input input-bordered" 
+                                autocomplete="current-password"     
                                 required />
                             <label className="label">
                                 <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
